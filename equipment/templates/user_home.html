@@ -1,0 +1,481 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Portal | College Equipment System{% endblock %}
+
+{% block content %}
+<div class="container-fluid max-w-7xl">
+
+    <!-- Student Portal Welcome Header -->
+    <div class="p-4 mb-4 bg-white rounded-4 border shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="stat-icon bg-primary bg-opacity-10 text-primary fs-2">
+                <i class="bi bi-person-badge"></i>
+            </div>
+            <div>
+                <div class="d-flex align-items-center gap-2">
+                    <h3 class="fw-extrabold mb-0 text-dark">Welcome, {{ request.user.first_name|default:request.user.username }}</h3>
+                    <span class="role-pill role-student"><i class="bi bi-mortarboard-fill me-1"></i> Student</span>
+                </div>
+                <p class="text-muted mb-0 small">
+                    Department: <strong>{{ request.user.department|default:"General Student" }}</strong> &bull;
+                    Phone: <strong>{{ request.user.phone|default:"Not specified" }}</strong>
+                </p>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#requestModal">
+                <i class="bi bi-plus-circle me-2"></i> Request Equipment
+            </button>
+        </div>
+    </div>
+
+    {% if borrow_notifications %}
+        <div class="custom-card p-3 mb-4">
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-bell me-2 text-primary"></i>Notifications</h5>
+            {% for notification in borrow_notifications %}
+                <div class="alert {% if notification.notification_type == 'OVERDUE' %}alert-danger{% elif notification.notification_type == 'DUE_TODAY' %}alert-warning{% else %}alert-info{% endif %} mb-2" role="status">
+                    <strong>{{ notification.title }}</strong>
+                    <div>{{ notification.message }}</div>
+                    <small class="text-muted">{{ notification.created_at|date:"M d, Y g:i A" }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Student KPI Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-bold uppercase">Total Requests</span>
+                        <h3 class="fw-bold text-dark mb-0 mt-1">{{ stats.total_requests }}</h3>
+                    </div>
+                    <div class="stat-icon bg-primary-subtle text-primary">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-bold uppercase">Pending Approval</span>
+                        <h3 class="fw-bold text-warning mb-0 mt-1">{{ stats.pending }}</h3>
+                    </div>
+                    <div class="stat-icon bg-warning-subtle text-warning">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-bold uppercase">Active Loans</span>
+                        <h3 class="fw-bold text-info mb-0 mt-1">{{ stats.issued }}</h3>
+                    </div>
+                    <div class="stat-icon bg-info-subtle text-info">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-bold uppercase">Returned Items</span>
+                        <h3 class="fw-bold text-success mb-0 mt-1">{{ stats.returned }}</h3>
+                    </div>
+                    <div class="stat-icon bg-success-subtle text-success">
+                        <i class="bi bi-check-all"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Student Navigation Tabs -->
+    <ul class="nav nav-tabs nav-tabs-custom mb-4" id="studentTab" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" id="catalog-tab" data-bs-toggle="tab" data-bs-target="#catalog" type="button">
+                <i class="bi bi-grid-3x3-gap me-2"></i> Equipment Catalog & Search
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button">
+                <i class="bi bi-clock-history me-2"></i> My Borrowing History
+                {% if stats.pending > 0 %}
+                    <span class="badge bg-warning text-dark ms-1 rounded-pill">{{ stats.pending }}</span>
+                {% endif %}
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="damage-tab" data-bs-toggle="tab" data-bs-target="#damage" type="button">
+                <i class="bi bi-exclamation-triangle me-2"></i> Report Issue / Damage
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button">
+                <i class="bi bi-gear me-2"></i> My Profile
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="studentTabContent">
+
+        <!-- TAB 1: EQUIPMENT CATALOG -->
+        <div class="tab-pane fade show active" id="catalog" role="tabpanel">
+            
+            <!-- Search & Filter Bar -->
+            <div class="custom-card p-3 mb-4">
+                <form method="GET" action="{% url 'user_home' %}" class="row g-2 align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                            <input type="text" name="q" value="{{ search_query }}" class="form-control border-start-0 bg-light" placeholder="Search equipment by name, code, location...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="category" class="form-select bg-light" onchange="this.form.submit()">
+                            <option value="">All Resource Categories</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ cat.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Filter</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Equipment Grid Cards -->
+            <div class="row g-4">
+                {% for item in equipments %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="equipment-card">
+                            <div class="equipment-card-header">
+                                <div class="equipment-icon-wrapper mb-2">
+                                    <i class="bi {{ item.image_url|default:'bi-box-seam' }}"></i>
+                                </div>
+                                <span class="badge bg-secondary-subtle text-secondary small fw-bold px-2 py-1 mb-1">
+                                    {{ item.category.name }}
+                                </span>
+                                <h5 class="fw-bold text-dark mb-1">{{ item.name }}</h5>
+                                <code class="small text-muted">[ {{ item.code }} ]</code>
+                            </div>
+
+                            <div class="p-3 flex-grow-1 d-flex flex-column justify-content-between">
+                                <p class="text-muted small mb-3">{{ item.description|truncatewords:15 }}</p>
+
+                                <div class="bg-light p-2 rounded-3 small mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted"><i class="bi bi-geo-alt text-danger me-1"></i> Location:</span>
+                                        <strong class="text-dark">{{ item.location }}</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted"><i class="bi bi-pie-chart text-primary me-1"></i> Availability:</span>
+                                        {% if item.available_quantity > 0 and item.condition == 'GOOD' %}
+                                            <span class="badge bg-success-subtle text-success fw-bold">{{ item.available_quantity }} / {{ item.total_quantity }} Available</span>
+                                        {% else %}
+                                            <span class="badge bg-danger-subtle text-danger fw-bold">Out of Stock / Maintenance</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if item.available_quantity > 0 and item.condition == 'GOOD' %}
+                                    <button class="btn btn-outline-primary w-100 fw-bold rounded-3" 
+                                            onclick="openRequestModal('{{ item.id }}', '{{ item.name|escapejs }}', '{{ item.available_quantity }}')">
+                                        <i class="bi bi-cart-plus me-1"></i> Request This Item
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-secondary w-100 fw-bold rounded-3" disabled>
+                                        Currently Unavailable
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-box-seam text-muted fs-1 d-block mb-3"></i>
+                        <h5 class="text-muted">No equipment found matching your filter criteria.</h5>
+                        <a href="{% url 'user_home' %}" class="btn btn-outline-primary btn-sm rounded-pill mt-2">Reset Filter</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- TAB 2: MY BORROWING HISTORY -->
+        <div class="tab-pane fade" id="history" role="tabpanel">
+            <div class="custom-card">
+                <div class="custom-card-header">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-journal-text me-2 text-primary"></i> My Equipment Borrowing History</h5>
+                    <span class="badge bg-light text-dark border">{{ my_requests.count }} Total Records</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Req ID</th>
+                                <th>Equipment</th>
+                                <th>Qty</th>
+                                <th>Borrow Date</th>
+                                <th>Expected Return</th>
+                                <th>Status</th>
+                                <th>Admin Remarks</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in my_requests %}
+                                <tr>
+                                    <td><strong class="text-dark">#REQ-{{ req.id }}</strong></td>
+                                    <td>
+                                        <strong class="d-block text-dark">{{ req.equipment.name }}</strong>
+                                        <small class="text-muted">{{ req.equipment.code }}</small>
+                                    </td>
+                                    <td><span class="badge bg-light text-dark border">{{ req.quantity }}</span></td>
+                                    <td>{{ req.start_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        {{ req.expected_return_date|date:"M d, Y" }}
+                                        {% if req.status == 'ISSUED' %}
+                                            <br><small class="text-primary fw-bold"><i class="bi bi-clock me-1"></i> Active Loan</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if req.status == 'PENDING' %}
+                                            <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i> Pending</span>
+                                        {% elif req.status == 'APPROVED' %}
+                                            <span class="badge bg-info text-dark"><i class="bi bi-hand-thumbs-up me-1"></i> Approved</span>
+                                        {% elif req.status == 'ISSUED' %}
+                                            <span class="badge bg-primary"><i class="bi bi-box-seam me-1"></i> Issued</span>
+                                        {% elif req.status == 'RETURNED' %}
+                                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Returned</span>
+                                        {% elif req.status == 'REJECTED' %}
+                                            <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i> Rejected</span>
+                                        {% elif req.status == 'OVERDUE' %}
+                                            <span class="badge bg-dark text-warning"><i class="bi bi-exclamation-triangle me-1"></i> Overdue</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if req.admin_remarks %}
+                                            <small class="text-dark bg-light p-1 rounded d-block border">{{ req.admin_remarks }}</small>
+                                        {% else %}
+                                            <span class="text-muted small">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if req.status == 'PENDING' %}
+                                            <a href="{% url 'cancel_borrow_request' req.id %}" class="btn btn-outline-danger btn-sm rounded-2" onclick="return confirm('Cancel this borrow request?')">
+                                                Cancel
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted small">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">You have not submitted any borrowing requests yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: REPORT DAMAGE -->
+        <div class="tab-pane fade" id="damage" role="tabpanel">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="custom-card p-4">
+                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-tools text-danger me-2"></i> Report Equipment Damage / Fault</h5>
+                        <p class="text-muted small">Notice an issue with equipment you borrowed? Submit a damage report so lab managers can arrange repair.</p>
+                        
+                        <form method="POST" action="{% url 'report_damage' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Select Borrowed Equipment *</label>
+                                <select name="borrow_request_id" class="form-select" required {% if not reportable_borrow_requests %}disabled{% endif %}>
+                                    <option value="">-- Choose a borrowing record --</option>
+                                    {% for borrow_request in reportable_borrow_requests %}
+                                        <option value="{{ borrow_request.id }}">{{ borrow_request.equipment.name }} ({{ borrow_request.equipment.code }}) - Request #{{ borrow_request.id }}</option>
+                                    {% endfor %}
+                                </select>
+                                {% if not reportable_borrow_requests %}
+                                    <small class="text-muted">You can report equipment after it has been issued to you.</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">Description of Issue / Damage *</label>
+                                <textarea name="description" class="form-control" rows="4" placeholder="Describe what went wrong, broken parts, lens scratches, audio noise..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-danger w-100 fw-bold rounded-3" {% if not reportable_borrow_requests %}disabled{% endif %}>
+                                <i class="bi bi-send me-1"></i> Submit Damage Report
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="custom-card">
+                        <div class="custom-card-header">
+                            <h5 class="fw-bold mb-0 text-dark">My Submitted Damage Reports</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Equipment</th>
+                                        <th>Reported On</th>
+                                        <th>Issue Summary</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for report in my_damage_reports %}
+                                        <tr>
+                                            <td><strong>{{ report.equipment.name }}</strong></td>
+                                            <td>{{ report.reported_at|date:"M d, Y" }}</td>
+                                            <td><small>{{ report.description|truncatewords:10 }}</small></td>
+                                            <td>
+                                                <span class="badge bg-secondary">{{ report.get_status_display }}</span>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted">No damage reports submitted.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: PROFILE SETTINGS -->
+        <div class="tab-pane fade" id="profile" role="tabpanel">
+            <div class="col-md-6 mx-auto">
+                <div class="custom-card p-4">
+                    <h5 class="fw-bold text-dark mb-3"><i class="bi bi-person-gear text-primary me-2"></i> Update Student Profile</h5>
+                    <form method="POST" action="{% url 'update_profile' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">First Name</label>
+                            {{ profile_form.first_name }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Last Name</label>
+                            {{ profile_form.last_name }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Email Address (permanent)</label>
+                            <input type="email" class="form-control" value="{{ request.user.email }}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Phone Number</label>
+                            {{ profile_form.phone }}
+                            <div class="form-text">Enter a 10-digit Indian mobile number, optionally with +91.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Department / Branch</label>
+                            {{ profile_form.department }}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- BORROW REQUEST MODAL -->
+<div class="modal fade" id="requestModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header bg-dark text-white rounded-top-4">
+                <h5 class="modal-title fw-bold"><i class="bi bi-file-earmark-plus me-2 text-info"></i> Submit Borrowing Request</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{% url 'submit_borrow_request' %}">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Select Equipment *</label>
+                        <select name="equipment" id="modal_equipment_select" class="form-select" required>
+                            <option value="">-- Choose Equipment --</option>
+                            {% for item in equipments %}
+                                {% if item.available_quantity > 0 and item.condition == 'GOOD' %}
+                                    <option value="{{ item.id }}">{{ item.name }} (Available: {{ item.available_quantity }})</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Quantity Required *</label>
+                        <input type="number" name="quantity" min="1" value="1" class="form-control" required>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-muted">Start Date *</label>
+                            <input type="date" name="start_date" value="{{ today_date }}" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-muted">Expected Return Date *</label>
+                            <input type="date" name="expected_return_date" value="{{ today_date }}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Purpose of Borrowing *</label>
+                        <textarea name="purpose" class="form-control" rows="3" placeholder="Course work, lab experiment, presentation, college event..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill fw-bold px-4">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.location.hash === '#profile') {
+            bootstrap.Tab.getOrCreateInstance(document.getElementById('profile-tab')).show();
+        }
+    });
+
+    function openRequestModal(eqId, eqName, availQty) {
+        var select = document.getElementById('modal_equipment_select');
+        select.value = eqId;
+        var modal = new bootstrap.Modal(document.getElementById('requestModal'));
+        modal.show();
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Account | College Equipment System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="card-header bg-dark text-white text-center p-4 border-0">
+                <div class="stat-icon bg-primary bg-opacity-25 text-info mx-auto mb-2">
+                    <i class="bi bi-person-plus fs-3"></i>
+                </div>
+                <h4 class="fw-bold mb-1">Create Account</h4>
+                <p class="small text-light opacity-75 mb-0">Create an account as a Student or Staff Member</p>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="POST" action="{% url 'register' %}">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Username *</label>
+                            {{ form.username }}
+                            {% for error in form.username.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Account Role *</label>
+                            {{ form.role }}
+                            {% for error in form.role.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">First Name</label>
+                            {{ form.first_name }}
+                            {% for error in form.first_name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Last Name</label>
+                            {{ form.last_name }}
+                            {% for error in form.last_name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Email Address *</label>
+                            {{ form.email }}
+                            {% for error in form.email.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Mobile Number *</label>
+                            {{ form.phone }}
+                            {% for error in form.phone.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small text-muted">Department / Branch</label>
+                            {{ form.department }}
+                            <div class="form-text">Select your department or academic branch.</div>
+                            {% for error in form.department.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Password *</label>
+                            {{ form.password1 }}
+                            {% for error in form.password1.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small text-muted">Confirm Password *</label>
+                            {{ form.password2 }}
+                            {% for error in form.password2.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3 shadow-sm fw-bold mt-4">
+                        <i class="bi bi-check-circle me-2"></i> Register Account
+                    </button>
+                </form>
+
+                <div class="text-center border-top pt-3 mt-4">
+                    <span class="text-muted small">Already registered?</span>
+                    <a href="{% url 'login' %}" class="fw-bold text-primary text-decoration-none ms-1">Log In Here &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

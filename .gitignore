@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+my_env/
+venv/
+.venv/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Databases and collected files
+db.sqlite3
+*.sqlite3
+staticfiles/
+media/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Generated project documents and local setup/debug scripts
+equipment_technical_questions_answers.pdf
+setup_db.py
+reset_db.py
+check_errors.py

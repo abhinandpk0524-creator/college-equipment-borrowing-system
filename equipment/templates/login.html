@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Account Login | College Equipment System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center py-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="card-header bg-dark text-white text-center p-4 border-0">
+                <div class="stat-icon bg-primary bg-opacity-25 text-info mx-auto mb-2">
+                    <i class="bi bi-person-lock fs-3"></i>
+                </div>
+                <h4 class="fw-bold mb-1">Account Login</h4>
+                <p class="small text-light opacity-75 mb-0">Enter your username and password</p>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="id_username" name="username" placeholder="Username" required autocomplete="username">
+                        <label for="id_username"><i class="bi bi-person me-1"></i> Username</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control rounded-3" id="id_password" name="password" placeholder="Password" required autocomplete="current-password">
+                        <label for="id_password"><i class="bi bi-key me-1"></i> Password</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3 shadow-sm fw-bold mb-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Log In to Dashboard
+                    </button>
+                </form>
+
+                <div class="text-center border-top pt-3">
+                    <span class="text-muted small">Don't have an account yet?</span>
+                    <a href="{% url 'register' %}" class="fw-bold text-primary text-decoration-none ms-1">Create Account &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}
