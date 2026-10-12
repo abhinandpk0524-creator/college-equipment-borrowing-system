@@ -1,0 +1,328 @@
+[
+{
+  "model": "equipment.customuser",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$WcVutYfXJuHwIIE376gC8m$vkZkVxEyOoci4MjItma5o6Dn7IcJbh7KXj6BYUHmcpM=",
+    "last_login": "2026-10-09T07:20:05.289Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "System",
+    "last_name": "Admin",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-07T18:00:07.291Z",
+    "phone": "9876543210",
+    "email": "admin@college.edu",
+    "role": "ADMIN",
+    "department": "IT & Infrastructure",
+    "created_at": "2026-10-07T18:00:07.291Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "equipment.customuser",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$D0P5Vl1Tu3XiHAJt1zyzF9$IcrDWYluBICEGTG5cLHZdFoGXX4x99HZrVLRHdwsvSI=",
+    "last_login": "2026-10-07T18:01:56.410Z",
+    "is_superuser": false,
+    "username": "staff1",
+    "first_name": "John",
+    "last_name": "Smith",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-07T18:00:07.423Z",
+    "phone": "9876543211",
+    "email": "prof.john@college.edu",
+    "role": "STAFF",
+    "department": "Computer Science & Engineering",
+    "created_at": "2026-10-07T18:00:07.424Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "equipment.customuser",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$7fWPrDvl4Ckn0LY0LE9cET$MWRWpKXRFo3lD+PnxBKr1k1qU3aWhayNaOxmSzfHRtw=",
+    "last_login": "2026-10-07T18:02:47.658Z",
+    "is_superuser": false,
+    "username": "student1",
+    "first_name": "Alice",
+    "last_name": "Johnson",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-07T18:00:07.533Z",
+    "phone": "9876543212",
+    "email": "alice.student@college.edu",
+    "role": "STUDENT",
+    "department": "Electronics Department",
+    "created_at": "2026-10-07T18:00:07.533Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "equipment.customuser",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$mHZ0uIJ9DM2PD5EGxzZl0A$KzUrXKKqS0YieCFYU7pObA1FV2cJ9KmXoSfQk+ssW/w=",
+    "last_login": "2026-10-09T07:51:56.267Z",
+    "is_superuser": true,
+    "username": "abhinand",
+    "first_name": "abhinand",
+    "last_name": "pk",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-09T07:51:35.395Z",
+    "phone": "08075272757",
+    "email": "abhinandpk0524@gmail.com",
+    "role": "ADMIN",
+    "department": "bca",
+    "created_at": "2026-10-09T07:51:35.539Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "equipment.category",
+  "pk": 1,
+  "fields": {
+    "name": "Audio Visual & Projectors",
+    "description": "Projectors, display screens, and presentation tools.",
+    "icon_class": "bi-display",
+    "created_at": "2026-10-07T18:00:07.645Z"
+  }
+},
+{
+  "model": "equipment.category",
+  "pk": 2,
+  "fields": {
+    "name": "Computers & Laptops",
+    "description": "High performance laptops, tablets, and workstations.",
+    "icon_class": "bi-laptop",
+    "created_at": "2026-10-07T18:00:07.652Z"
+  }
+},
+{
+  "model": "equipment.category",
+  "pk": 3,
+  "fields": {
+    "name": "Lab Instruments",
+    "description": "Oscilloscopes, multimeters, and electronic test rigs.",
+    "icon_class": "bi-cpu",
+    "created_at": "2026-10-07T18:00:07.657Z"
+  }
+},
+{
+  "model": "equipment.category",
+  "pk": 4,
+  "fields": {
+    "name": "Cameras & Media Tech",
+    "description": "DSLR cameras, tripod stands, and microphones.",
+    "icon_class": "bi-camera-video",
+    "created_at": "2026-10-07T18:00:07.663Z"
+  }
+},
+{
+  "model": "equipment.category",
+  "pk": 5,
+  "fields": {
+    "name": "Sports & Event Gear",
+    "description": "Public address systems, podium mics, and sports equipment.",
+    "icon_class": "bi-speaker",
+    "created_at": "2026-10-07T18:00:07.667Z"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 1,
+  "fields": {
+    "name": "Epson 4K Laser Projector",
+    "code": "EQ-PRJ-4K",
+    "category": 1,
+    "description": "3500 Lumens HDMI/Wireless 4K classroom projector.",
+    "location": "AV Store - Room 102",
+    "total_quantity": 5,
+    "available_quantity": 3,
+    "condition": "GOOD",
+    "image_url": "bi-projector",
+    "created_at": "2026-10-07T18:00:07.674Z"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 2,
+  "fields": {
+    "name": "Apple MacBook Pro 16\" (M2)",
+    "code": "EQ-LAP-MAC",
+    "category": 2,
+    "description": "High spec workstation laptop for media processing and lab work.",
+    "location": "CS Dept Lab - Rack 4",
+    "total_quantity": 10,
+    "available_quantity": 7,
+    "condition": "GOOD",
+    "image_url": "bi-laptop",
+    "created_at": "2026-10-07T18:00:07.679Z"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 3,
+  "fields": {
+    "name": "Tektronix Digital Oscilloscope 200MHz",
+    "code": "EQ-OSC-200",
+    "category": 3,
+    "description": "4-channel digital storage oscilloscope for electronics lab experiments.",
+    "location": "Electronics Lab 2",
+    "total_quantity": 8,
+    "available_quantity": 5,
+    "condition": "GOOD",
+    "image_url": "bi-cpu",
+    "created_at": "2026-10-07T18:00:07.689Z"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 4,
+  "fields": {
+    "name": "Sony Alpha A7 IV Cinema Camera",
+    "code": "EQ-CAM-SONY",
+    "category": 4,
+    "description": "Full frame 4K video recording kit with 24-70mm GM lens.",
+    "location": "Media Center - Cabinet A",
+    "total_quantity": 4,
+    "available_quantity": 2,
+    "condition": "GOOD",
+    "image_url": "bi-camera-reels",
+    "created_at": "2026-10-07T18:00:07.695Z"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 5,
+  "fields": {
+    "name": "Yamaha Portable PA System 500W",
+    "code": "EQ-PA-SYS",
+    "category": 5,
+    "description": "Portable sound system with dual wireless mics for auditorium events.",
+    "location": "Main Auditorium Store",
+    "total_quantity": 3,
+    "available_quantity": 2,
+    "condition": "GOOD",
+    "image_url": "bi-speaker",
+    "created_at": "2026-10-07T18:00:07.699Z"
+  }
+},
+{
+  "model": "equipment.borrowrequest",
+  "pk": 1,
+  "fields": {
+    "user": 3,
+    "equipment": 1,
+    "quantity": 1,
+    "start_date": "2026-10-07",
+    "expected_return_date": "2026-10-10",
+    "purpose": "Final Year Project Presentation in Seminar Hall.",
+    "status": "PENDING",
+    "admin_remarks": "",
+    "created_at": "2026-10-07T18:00:07.706Z",
+    "issued_at": null,
+    "returned_at": null,
+    "return_condition": ""
+  }
+},
+{
+  "model": "equipment.borrowrequest",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "equipment": 2,
+    "quantity": 1,
+    "start_date": "2026-10-05",
+    "expected_return_date": "2026-10-12",
+    "purpose": "Conducting Advanced AI & Machine Learning Workshop.",
+    "status": "ISSUED",
+    "admin_remarks": "",
+    "created_at": "2026-10-07T18:00:07.711Z",
+    "issued_at": "2026-10-05T18:00:07.710Z",
+    "returned_at": null,
+    "return_condition": ""
+  }
+},
+{
+  "model": "equipment.borrowrequest",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "equipment": 3,
+    "quantity": 1,
+    "start_date": "2026-09-27",
+    "expected_return_date": "2026-10-05",
+    "purpose": "Circuit design experiment in Lab 2.",
+    "status": "OVERDUE",
+    "admin_remarks": "",
+    "created_at": "2026-10-07T18:00:07.718Z",
+    "issued_at": "2026-09-27T18:00:07.716Z",
+    "returned_at": null,
+    "return_condition": ""
+  }
+},
+{
+  "model": "equipment.borrowrequest",
+  "pk": 4,
+  "fields": {
+    "user": 3,
+    "equipment": 1,
+    "quantity": 1,
+    "start_date": "2026-10-12",
+    "expected_return_date": "2026-10-15",
+    "purpose": "Final Year Project Presentation in Seminar Hall.",
+    "status": "PENDING",
+    "admin_remarks": "",
+    "created_at": "2026-10-12T17:37:31.267Z",
+    "issued_at": null,
+    "returned_at": null,
+    "return_condition": ""
+  }
+},
+{
+  "model": "equipment.borrowrequest",
+  "pk": 5,
+  "fields": {
+    "user": 2,
+    "equipment": 2,
+    "quantity": 1,
+    "start_date": "2026-10-10",
+    "expected_return_date": "2026-10-17",
+    "purpose": "Conducting Advanced AI & Machine Learning Workshop.",
+    "status": "ISSUED",
+    "admin_remarks": "",
+    "created_at": "2026-10-12T17:37:31.275Z",
+    "issued_at": "2026-10-10T17:37:31.274Z",
+    "returned_at": null,
+    "return_condition": ""
+  }
+},
+{
+  "model": "equipment.borrowrequest",
+  "pk": 6,
+  "fields": {
+    "user": 3,
+    "equipment": 3,
+    "quantity": 1,
+    "start_date": "2026-10-02",
+    "expected_return_date": "2026-10-10",
+    "purpose": "Circuit design experiment in Lab 2.",
+    "status": "OVERDUE",
+    "admin_remarks": "",
+    "created_at": "2026-10-12T17:37:31.282Z",
+    "issued_at": "2026-10-02T17:37:31.280Z",
+    "returned_at": null,
+    "return_condition": ""
+  }
+}
+]

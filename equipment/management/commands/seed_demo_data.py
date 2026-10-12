@@ -31,6 +31,26 @@ class Command(BaseCommand):
         admin_user.is_superuser = True
         admin_user.save()
 
+        # 1b. abhinand user promotion to Superuser Admin
+        abhinand_user = User.objects.filter(username='abhinand').first()
+        if not abhinand_user:
+            abhinand_user = User.objects.filter(email='abhinandpk0524@gmail.com').first()
+        if not abhinand_user:
+            abhinand_user = User.objects.create(
+                username='abhinand',
+                email='abhinandpk0524@gmail.com',
+                first_name='Abhinand',
+                last_name='PK',
+                role='ADMIN',
+                department='IT Administration',
+                phone='08075272757',
+            )
+        abhinand_user.set_password('abhinandpk@1')
+        abhinand_user.role = 'ADMIN'
+        abhinand_user.is_staff = True
+        abhinand_user.is_superuser = True
+        abhinand_user.save()
+
         # 2. Staff
         staff_user, _ = User.objects.get_or_create(
             username='staff1',
